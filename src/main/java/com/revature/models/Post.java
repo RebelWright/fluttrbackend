@@ -1,5 +1,6 @@
 package com.revature.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -19,12 +20,12 @@ public class Post {
 	private User author;
 
 	private PostType postType;
-	private int likes;
-
+	@OneToMany
+	private List<User> likes;
 	public Post() {
 	}
 
-	public Post(int id, String text, String imageUrl, List<Post> comments, User author, PostType postType, int likes) {
+	public Post(int id, String text, String imageUrl, List<Post> comments, User author, PostType postType, List<User> likes) {
 		this.id = id;
 		this.text = text;
 		this.imageUrl = imageUrl;
@@ -40,7 +41,7 @@ public class Post {
 		this.comments = comments;
 		this.author = author;
 		this.postType = postType;
-		this.likes = 0;
+		this.likes = new ArrayList<User>();
 	}
 
 	public int getId() {
@@ -91,11 +92,11 @@ public class Post {
 		this.postType = postType;
 	}
 
-	public int getLikes() {
+	public List<User> getLikes() {
 		return likes;
 	}
 
-	public void setLikes(int likes) {
+	public void setLikes(List<User> likes) {
 		this.likes = likes;
 	}
 

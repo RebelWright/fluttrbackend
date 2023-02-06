@@ -3,6 +3,7 @@ package com.revature.services;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.revature.models.PostType;
 import com.revature.models.User;
@@ -17,10 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
 	private PostRepository postRepository;
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 	
-	public PostService(PostRepository postRepository) {
+	public PostService(PostRepository postRepository, UserRepository userRepository) {
 		this.postRepository = postRepository;
+		this.userRepository = userRepository;
 	}
 
 	public List<Post> getAll() {
@@ -64,6 +66,26 @@ public class PostService {
 		commentList.remove(comment);
 		post.setComments(commentList);
 		deletePost(comment.getId());
+		return post;
+	}
+
+	public Optional<User> findUserById(int id) {
+		return userRepository.findById(id);
+	}
+
+	@Transactional
+	public Post addPostLike(Post post, User liker) {
+		List<User> postLikesList = post.getLikes();
+		postLikesList.add(liker);
+		post.setLikes(postLikesList);
+		return post;
+	}
+
+	@Transactional
+	public Post removePostLike(Post post, User liker) {
+		List<User> postLikesList = post.getLikes();
+		postLikesList.remove(liker);
+		post.setLikes(postLikesList);
 		return post;
 	}
 }
