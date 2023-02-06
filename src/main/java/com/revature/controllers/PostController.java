@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.revature.models.PostType;
+import com.revature.models.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -48,11 +49,10 @@ public class PostController {
 
     // Testing Method: Get a Post By Id
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable int id) {
+    public ResponseEntity getPostById(@PathVariable int id) {
         Optional<Post> postOptional = postService.findById(id);
-
-        if (!postOptional.isPresent()){
-            return ResponseEntity.badRequest().build();
+        if (!postOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("No posts were found with this id.");
         }
 
         return ResponseEntity.ok(postOptional.get());
@@ -63,32 +63,38 @@ public class PostController {
         return ResponseEntity.ok("this post was deleted");
     }
 
-    @PutMapping("/{id}/like")
-    public ResponseEntity<Post> addPostLikes(@PathVariable int id) {
-        Optional<Post> postOptional = postService.findById(id);
-        if(!postOptional.isPresent()) {
-            return ResponseEntity.badRequest().build();
+    @PutMapping("/{postId}/like/{userId}")
+    public ResponseEntity addPostLikes(@PathVariable(name="postId") int postId, @PathVariable(name="userId") int userId) {
+        Optional<Post> postOptional = postService.findById(postId);
+        if (!postOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("No post was found with this ID.");
         }
-        Post post = postOptional.get();
-        post.setLikes(post.getLikes() + 1);
-        return ResponseEntity.ok(postService.upsert(post));
+        Optional<User> userOptional = postService.findUserById(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("No user was found with this ID.");
+        }
+
+        return ResponseEntity.ok(postService.addPostLike(postOptional.get(), userOptional.get()));
     }
 
-    @PutMapping("/{id}/unlike")
-    public ResponseEntity<Post> removePostLikes(@PathVariable int id) {
-        Optional<Post> postOptional = postService.findById(id);
-        if(!postOptional.isPresent()) {
-            return ResponseEntity.badRequest().build();
+    @PutMapping("/{postId}/unlike/{userId}")
+    public ResponseEntity removePostLikes(@PathVariable(name="postId") int postId, @PathVariable(name="userId") int userId) {
+        Optional<Post> postOptional = postService.findById(postId);
+        if (!postOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("No post was found with this ID.");
         }
-        Post post = postOptional.get();
-        post.setLikes(post.getLikes() - 1);
-        return ResponseEntity.ok(postService.upsert(post));
+        Optional<User> userOptional = postService.findUserById(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("No user was found with this ID.");
+        }
+
+        return ResponseEntity.ok(postService.removePostLike(postOptional.get(), userOptional.get()));
     }
     @PutMapping("editPost/{id}")
-    public ResponseEntity<Post> editPost(@PathVariable int id, @RequestBody String editString) {
+    public ResponseEntity editPost(@PathVariable int id, @RequestBody String editString) {
         Optional<Post> postOptional = postService.findById(id);
-        if(!postOptional.isPresent()){
-            return ResponseEntity.badRequest().build();
+        if (!postOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("No posts were found with this id.");
         }
         Post newPost = postOptional.get();
         newPost.setText(editString);
@@ -97,10 +103,10 @@ public class PostController {
     }
 
     @PutMapping("editPost/{id}/image")
-    public ResponseEntity<Post> editPostByUrl(@PathVariable int id, @RequestBody String editString) {
+    public ResponseEntity editPostByUrl(@PathVariable int id, @RequestBody String editString) {
         Optional<Post> postOptional = postService.findById(id);
-        if(!postOptional.isPresent()){
-            return ResponseEntity.badRequest().build();
+        if (!postOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("No posts were found with this id.");
         }
         Post newPost = postOptional.get();
         newPost.setImageUrl(editString);
