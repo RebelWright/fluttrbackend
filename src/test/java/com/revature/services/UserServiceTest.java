@@ -232,7 +232,7 @@ class UserServiceTest {
         List<User> expectedFollowing = new ArrayList<>();
         verify(testFollowerUser).setFollowing(expectedFollowing);
     }
-    //something is off about this one. setFollowers and setFollowing are both running.
+
     @Test
     void removeFollowerTestFailure() {
         List<User> testFollowers = new ArrayList<>();
@@ -244,8 +244,6 @@ class UserServiceTest {
         List<User> unFollowFailureList = userService.removeFollower(testFollowedUser, testFollowerUser);
         assertEquals(unFollowFailureList.size(), 2);
 
-        //verify(testFollowedUser, never()).setFollowers(anyList());
-        //verify(testFollowerUser, never()).setFollowing(anyList());
     }
 
     @Test

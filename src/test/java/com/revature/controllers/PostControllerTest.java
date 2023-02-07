@@ -93,11 +93,11 @@ class PostControllerTest {
         Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
         Post unexpectedPost = new Post(2, "Unexpected post", "unexpected.com", new ArrayList<>(), testUser2, Top, likesList);
 
-        given(postService.upsert(any(Post.class))).willReturn(unexpectedPost);
+        given(postService.upsert(any(Post.class))).willReturn(expectedPost);
 
         mockMvc.perform(put("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(expectedPost)))
+                        .content(objectMapper.writeValueAsString(unexpectedPost)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -192,8 +192,6 @@ class PostControllerTest {
 
         mockMvc.perform(put("/posts/1/like/1"))
                 .andExpect(status().isOk());
-                //.andExpect(content().string("{\"id\":1,\"text\":\"text\",\"imageUrl\":\"imageUrl\",\"comments\":null,\"author\":null,\"postType\":null,\"likes\":[{\"id\":1,\"username\":\"username\",\"password\":\"password\",\"email\":\"email\"}]}"));
-
         verify(postService, times(1)).findById(expectedPost.getId());
         verify(postService, times(1)).findUserById(testUser1.getId());
         verify(postService, times(1)).addPostLike(expectedPost, testUser1);
@@ -213,6 +211,7 @@ class PostControllerTest {
 
     //mine
     @Test
+<<<<<<< Updated upstream
     void removePostLikesSuccess() throws Exception {
         User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
 
@@ -233,6 +232,68 @@ class PostControllerTest {
         //given(postService.findUserById(1)).willReturn(Optional.of(testUser1));
         this.mockMvc.perform(put("/posts/1/unlike/1")).andExpect(status().is(400));
     }
+=======
+    void addPostLikesTestFail() throws Exception {
+        User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
+        testUser1.setId(1);
+        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
+        List<User> likesList = new ArrayList<>();
+        likesList.add(testUser2);
+        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
+        String requestBody = objectMapper.writeValueAsString(expectedPost);
+        when(postService.findById(2)).thenReturn(Optional.empty());
+        mockMvc.perform(put("/posts/999/like/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+        verify(postService, never()).addPostLike(expectedPost,testUser1);
+    }
+
+    @Test
+    void removePostLikesTestSuccess() throws Exception {
+        User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
+        testUser1.setId(1);
+        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
+        List<User> likesList = new ArrayList<>();
+        likesList.add(testUser2);
+        likesList.add(testUser1);
+        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
+        when(postService.findById(expectedPost.getId())).thenReturn(Optional.of(expectedPost));
+        when(postService.findUserById(testUser1.getId())).thenReturn(Optional.of(testUser1));
+        when(postService.removePostLike(expectedPost, testUser1)).thenReturn(expectedPost);
+        String requestBody = objectMapper.writeValueAsString(expectedPost);
+
+        mockMvc.perform(put("/posts/1/unlike/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk());
+        verify(postService, times(1)).findById(expectedPost.getId());
+        verify(postService, times(1)).findUserById(testUser1.getId());
+        verify(postService, times(1)).removePostLike(expectedPost, testUser1);
+
+    }
+    @Test
+    void removePostLikesTestFail() throws Exception {
+        User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
+        testUser1.setId(1);
+        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
+        List<User> likesList = new ArrayList<>();
+        likesList.add(testUser2);
+        likesList.add(testUser1);
+        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
+        when(postService.findById(expectedPost.getId())).thenReturn(Optional.empty());
+        when(postService.removePostLike(expectedPost, testUser1)).thenReturn(expectedPost);
+        String requestBody = objectMapper.writeValueAsString(expectedPost);
+
+        mockMvc.perform(put("/posts/999/unlike/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+        verify(postService, never()).findById(expectedPost.getId());
+        verify(postService, never()).removePostLike(expectedPost, testUser1);
+    }
+
+>>>>>>> Stashed changes
 
     @Test
     void editPostSuccess() throws Exception {

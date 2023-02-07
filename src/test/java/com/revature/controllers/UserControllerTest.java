@@ -277,7 +277,7 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-        //still needs work....
+
     @Test
     void addFollowerTestSuccess() throws Exception{
         User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
@@ -285,9 +285,9 @@ public class UserControllerTest {
         testUser1.setFollowers(new ArrayList<>());
         testUser1.setFollowing(new ArrayList<>());
 
-        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
-        testUser2.setFollowers(new ArrayList<>());
-        testUser2.setFollowing(new ArrayList<>());
+        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", new ArrayList<>(), new ArrayList<>(), "image2.com");
+        //testUser2.setFollowers(new ArrayList<>());
+        //testUser2.setFollowing(new ArrayList<>());
         List<User> followSuccess = new ArrayList<>();
         followSuccess.add(testUser1);
         followSuccess.add(testUser2);
