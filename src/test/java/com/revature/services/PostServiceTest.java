@@ -24,13 +24,13 @@ public class PostServiceTest {
 
     @Mock
     private PostRepository postRepository;
-    @Mock
-    private UserRepository userRepository;
+    /*@Mock
+    private UserRepository userRepository;*/
 
     @InjectMocks
     private PostService postService;
-    @InjectMocks
-    private UserService userService;
+    /*@InjectMocks
+    private UserService userService;*/
     @Mock
     private User mockedUserObject;
     @Mock
@@ -38,15 +38,15 @@ public class PostServiceTest {
     @Mock
     private Post mockedComment;
 
-    @Mock
-    private Post testUserFeed;
+    /*@Mock
+    private Post testUserFeed;*/
 
-    @Mock
-    private List<Post> testFeed;
+    /*@Mock
+    private List<Post> testFeed;*/
     @Mock
     private User testFollowedUser;
-    @Mock
-    private User testFollowerUser;
+    /*@Mock
+    private User testFollowerUser;*/
     @Mock
     private List<User> mockLikesList;
 
@@ -186,7 +186,7 @@ public class PostServiceTest {
         //when(postRepository.deleteById(2)).thenReturn(testFeed);
 
 
-    @Test
+    //@Test
     void deletePostTestFail() {
 
     }
@@ -297,7 +297,7 @@ public class PostServiceTest {
         assertNotNull(result);
     }
     @Test
-    public void removePostLikesTestSuccess() {
+    public void removePostLikeTestSuccess() {
         User testUser1 = new User("test.com","password","John","Doe", "JDoe");
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();
@@ -309,7 +309,7 @@ public class PostServiceTest {
         //verify(postRepository, times(1)).save(result);
     }
     @Test
-    public void removePostLikesTestFail() {
+    public void removePostLikeTestFail() {
         User testUser1 = new User("test.com","password","John","Doe", "JDoe");
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();

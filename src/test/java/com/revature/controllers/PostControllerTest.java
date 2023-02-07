@@ -37,10 +37,10 @@ class PostControllerTest {
     //response from the servlet
     @Autowired
     private ObjectMapper objectMapper;
-    @Mock
-    private Post mockedPostObject;
-    @Mock
-    private User mockedUserObject;
+    //@Mock
+    //private Post mockedPostObject;
+    //@Mock
+    //private User mockedUserObject;
 
     @Test
     void getAllPostsTestSuccess() throws Exception {
@@ -93,11 +93,11 @@ class PostControllerTest {
         Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
         Post unexpectedPost = new Post(2, "Unexpected post", "unexpected.com", new ArrayList<>(), testUser2, Top, likesList);
 
-        given(postService.upsert(any(Post.class))).willReturn(unexpectedPost);
+        given(postService.upsert(any(Post.class))).willReturn(expectedPost);
 
         mockMvc.perform(put("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(expectedPost)))
+                        .content(objectMapper.writeValueAsString(unexpectedPost)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -178,29 +178,6 @@ class PostControllerTest {
     }
 
     @Test
-    void addPostLikesTestSuccess() throws Exception {
-        User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
-        testUser1.setId(1);
-        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
-        List<User> likesList = new ArrayList<>();
-        likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
-        String requestBody = objectMapper.writeValueAsString(expectedPost);
-        when(postService.findById(expectedPost.getId())).thenReturn(Optional.of(expectedPost));
-        when(postService.findUserById(testUser1.getId())).thenReturn(Optional.of(testUser1));
-        when(postService.addPostLike(expectedPost, testUser1)).thenReturn(expectedPost);
-
-        mockMvc.perform(put("/posts/1/like/1"))
-                .andExpect(status().isOk());
-                //.andExpect(content().string("{\"id\":1,\"text\":\"text\",\"imageUrl\":\"imageUrl\",\"comments\":null,\"author\":null,\"postType\":null,\"likes\":[{\"id\":1,\"username\":\"username\",\"password\":\"password\",\"email\":\"email\"}]}"));
-
-        verify(postService, times(1)).findById(expectedPost.getId());
-        verify(postService, times(1)).findUserById(testUser1.getId());
-        verify(postService, times(1)).addPostLike(expectedPost, testUser1);
-
-
-    }
-
     void addPostLikesFail() throws Exception {
         User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
 
@@ -269,9 +246,6 @@ class PostControllerTest {
                 .andExpect(status().is(400));
 
     }
-    /*@Test
-    void editPostTestFail() throws Exception {}*/
-
     @Test
     public void editPostByUrlSuccessTest() throws Exception {
         User testUser2 = new User(1, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
@@ -318,70 +292,6 @@ class PostControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(editString))
                 .andExpect(status().is(400));
     }
-    //need to add more .andExpect to verify content of response
-    @Test
-    public void createCommentTestSuccess() throws Exception {
-        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
-        List<User> likesList = new ArrayList<>();
-        likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
-        Post expectedComment = new Post(2,"This is a comment","image.com",new ArrayList<>(), testUser2, Top, likesList);
-        String requestBody = objectMapper.writeValueAsString(expectedComment);
-        given(postService.findById(1)).willReturn(Optional.of(expectedPost));
-        given(postService.upsert(expectedComment)).willReturn(expectedComment);
-        given(postService.addComment(expectedPost, expectedComment)).willReturn(expectedPost);
-        mockMvc.perform(post("/posts/1/comment")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isOk());
-    }
-    @Test
-    public void createCommentTestFailure() throws Exception {
-        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
-        List<User> likesList = new ArrayList<>();
-        likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
-        String requestBody = objectMapper.writeValueAsString(new Post(2,"This is a comment","image.com",new ArrayList<>(), testUser2, Top, likesList));
-
-        given(postService.findById(1)).willReturn(Optional.empty());
-        mockMvc.perform(post("/posts/1/comment")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("The parent post could not be found, please enter a valid parent post ID."));;
-    }
-    @Test
-    public void deleteCommentTestSuccess() throws Exception {
-        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
-        List<User> likesList = new ArrayList<>();
-        likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
-        Post expectedComment = new Post(2,"This is a comment","image.com",new ArrayList<>(), testUser2, Top, likesList);
-
-        given(postService.findById(1)).willReturn(Optional.of(expectedPost));
-        given(postService.findById(2)).willReturn(Optional.of(expectedComment));
-        mockMvc.perform(delete("/posts/1/comments/2"))
-                .andExpect(status().isOk());
-
-        verify(postService, times(1)).deleteComment(expectedPost, expectedComment);
-    }
-    @Test
-    public void deleteCommentTestFailure() throws Exception {
-        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
-        List<User> likesList = new ArrayList<>();
-        likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
-        Post expectedComment = new Post(2,"This is a comment","image.com",new ArrayList<>(), testUser2, Top, likesList);
-        given(postService.findById(1)).willReturn(Optional.empty());
-        given(postService.findById(2)).willReturn(Optional.empty());
-        mockMvc.perform(delete("/posts/1/comments/2"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("The post id provided does not link to an existing post."));
-
-        verify(postService, never()).deleteComment(expectedPost, expectedComment);
-    }
-
-
     @Test
     void createCommentsSuccess() throws Exception {
         User testUser = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
