@@ -91,6 +91,7 @@ public class PostServiceTest {
         User mockUser = new User("test.com","password","John","Doe", "JDoe");
         // tried to change to null but what is unique in post to test a null value
         Post mockPost = new Post(1, "Test text for upsert", "Profile pic",new ArrayList<>(), mockedUserObject, PostType.Top, mockLikesList);
+
         lenient().when(postRepository.save(mockedPostObject)).thenReturn(mockedPostObject);
         //assertThrows(IllegalAccessError.class, () -> postService.upsert(mockPost));
         verify(postRepository,never()).save(mockPost);
@@ -103,6 +104,7 @@ public class PostServiceTest {
         List<Post> expectedList = new ArrayList<Post>();
         //creating test post for ArrayList
         Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), mockedUserObject, PostType.Top, mockLikesList);
+
         //adding post to array
         expectedList.add(expectedPost);
         when(postRepository.findAllByPostType(PostType.Top)).thenReturn(expectedList);
@@ -121,6 +123,7 @@ public class PostServiceTest {
         List<Post> expectedList = new ArrayList<Post>();
         //creating test post for ArrayList
         Post expectedPost = new Post(1, "This is a test post", "image.com", new ArrayList<>(), mockedUserObject, PostType.Top, mockLikesList);
+
         //adding post to array
         expectedList.add(expectedPost);
         when(postRepository.findAllByPostType(PostType.Top)).thenReturn(expectedList);
@@ -137,6 +140,7 @@ public class PostServiceTest {
     void findByIdTestSuccess() {
         List<Post> expectedList = new ArrayList<Post>();
         Post mockPost = new Post(2,"First post", "FirstPic", new ArrayList<>(), mockedUserObject, PostType.Top,mockLikesList);
+
         when(postRepository.findById(2)).thenReturn(Optional.of(mockPost));
         Optional<Post> resultPost = postService.findById(2);
         assertEquals(resultPost.get().getId(), mockPost.getId());
@@ -147,6 +151,7 @@ public class PostServiceTest {
     void findByIdTestFail() {
         List<Post> expectedList = new ArrayList<Post>();
         Post mockPost = new Post(2,"First post", "FirstPic", new ArrayList<>(), mockedUserObject, PostType.Top,mockLikesList);
+
         when(postRepository.findById(2)).thenReturn(Optional.of(mockPost));
         Optional<Post> resultPost = postService.findById(2);
         assertNotEquals(resultPost.get(), mockPost.getId());
@@ -156,6 +161,7 @@ public class PostServiceTest {
     void findByIdTestFail2() {
         List<Post> expectedList = new ArrayList<Post>();
         Post mockPost = new Post(2,"First post", "FirstPic", new ArrayList<>(), mockedUserObject, null,mockLikesList);
+
         when(postRepository.findById(2)).thenReturn(Optional.of(mockPost));
         Optional<Post> resultPost = postService.findById(2);
         assertNotEquals(resultPost.get(), mockPost.getId());
@@ -253,6 +259,7 @@ public class PostServiceTest {
         assertEquals(mockedPostObject, expectedPost);
         assertEquals(0,expectedPost.getComments().size());
     }
+
     @Test
     public void deleteCommentTestFail() {
         List<Post> commentList = new ArrayList<>();
@@ -314,7 +321,4 @@ public class PostServiceTest {
         verify(postRepository, never()).save(testpost);
 
     }
-
-
-
 }
