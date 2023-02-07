@@ -361,6 +361,7 @@ public class UserControllerTest {
         likesList.add(testUser2);
         feed.add(new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, PostType.Top,likesList));
         feed.add(new Post(2,"Test post 2","image2.com",new ArrayList<>(), testUser2, PostType.Top, likesList));
+
         when(userService.getFeedForUser(optionalUser.get())).thenReturn(feed);
 
         mockMvc.perform(get("/users/1/feed"))
@@ -384,6 +385,7 @@ public class UserControllerTest {
         posts.add(new Post(1, "Test post 1", "image1.com", new ArrayList<>(), testUser, PostType.Top, likesList));
         posts.add(new Post(2, "Test post 2", "image2.com", new ArrayList<>(), testUser, PostType.Top, likesList));
 
+
         given(userService.findById(1)).willReturn(Optional.of(testUser));
         given(userService.getAllPostsByAUser(testUser)).willReturn(Optional.of(posts));
 
@@ -401,6 +403,7 @@ public class UserControllerTest {
         likesList.add(testUser2);
         posts.add(new Post(1, "Test post 1", "image1.com", new ArrayList<>(), testUser2, PostType.Top, likesList));
         posts.add(new Post(2, "Test post 2", "image2.com", new ArrayList<>(), testUser2, PostType.Top, likesList));
+
 
         given(userService.findById(1)).willReturn(Optional.empty());
 
