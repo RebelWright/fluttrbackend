@@ -6,6 +6,7 @@ import com.revature.models.PostType;
 import com.revature.models.User;
 import com.revature.services.UserService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,6 +37,9 @@ public class UserControllerTest {
     //response from the servlet
     @Autowired
     private ObjectMapper objectMapper;
+    @Mock
+    private List<User> mockLikesList;
+
 
     @Test
     public void createUser_Successful() throws Exception {
@@ -353,8 +357,10 @@ public class UserControllerTest {
         Optional<User> optionalUser = Optional.of(testUser1);
         when(userService.findById(1)).thenReturn(optionalUser);
         List<Post> feed = new ArrayList<>();
-        feed.add(new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, PostType.Top, 1));
-        feed.add(new Post(2,"Test post 2","image2.com",new ArrayList<>(), testUser2, PostType.Top, 1));
+        List<User> likesList = new ArrayList<>();
+        likesList.add(testUser2);
+        feed.add(new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, PostType.Top,likesList));
+        feed.add(new Post(2,"Test post 2","image2.com",new ArrayList<>(), testUser2, PostType.Top, likesList));
         when(userService.getFeedForUser(optionalUser.get())).thenReturn(feed);
 
         mockMvc.perform(get("/users/1/feed"))
@@ -373,8 +379,10 @@ public class UserControllerTest {
     void getAllPostsByAUserTestSuccess() throws Exception {
         User testUser = new User(1, "test.com", "password", "John", "Doe", "JDoe", null, null, "image.com");
         List<Post> posts = new ArrayList<>();
-        posts.add(new Post(1, "Test post 1", "image1.com", new ArrayList<>(), testUser, PostType.Top, 1));
-        posts.add(new Post(2, "Test post 2", "image2.com", new ArrayList<>(), testUser, PostType.Top, 1));
+        List<User> likesList = new ArrayList<>();
+        likesList.add(testUser);
+        posts.add(new Post(1, "Test post 1", "image1.com", new ArrayList<>(), testUser, PostType.Top, likesList));
+        posts.add(new Post(2, "Test post 2", "image2.com", new ArrayList<>(), testUser, PostType.Top, likesList));
 
         given(userService.findById(1)).willReturn(Optional.of(testUser));
         given(userService.getAllPostsByAUser(testUser)).willReturn(Optional.of(posts));
@@ -389,8 +397,10 @@ public class UserControllerTest {
     void getAllPostsByAUserTestFail() throws Exception {
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<Post> posts = new ArrayList<>();
-        posts.add(new Post(1, "Test post 1", "image1.com", new ArrayList<>(), testUser2, PostType.Top, 1));
-        posts.add(new Post(2, "Test post 2", "image2.com", new ArrayList<>(), testUser2, PostType.Top, 1));
+        List<User> likesList = new ArrayList<>();
+        likesList.add(testUser2);
+        posts.add(new Post(1, "Test post 1", "image1.com", new ArrayList<>(), testUser2, PostType.Top, likesList));
+        posts.add(new Post(2, "Test post 2", "image2.com", new ArrayList<>(), testUser2, PostType.Top, likesList));
 
         given(userService.findById(1)).willReturn(Optional.empty());
 
