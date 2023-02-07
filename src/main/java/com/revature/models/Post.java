@@ -20,7 +20,7 @@ public class Post {
 	private User author;
 
 	private PostType postType;
-	@OneToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	private List<User> likes;
 	public Post() {
 	}
