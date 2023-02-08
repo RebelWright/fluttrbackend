@@ -51,7 +51,6 @@ public class PostServiceTest {
     private List<User> mockLikesList;
 
 
-
     @Test
     void testGetAllPostsSuccess() {
         //creating empty ArrayList
@@ -68,6 +67,7 @@ public class PostServiceTest {
         //our actual result list
         assertEquals(mockedPostObject, resultList.get(0));
     }
+
     @Test
     void testGetAllPostsFail() {
         List<Post> expectedList = new ArrayList<>();
@@ -87,14 +87,14 @@ public class PostServiceTest {
     }
 
     @Test
-    void upsertFailTest(){
-        User mockUser = new User("test.com","password","John","Doe", "JDoe");
+    void upsertFailTest() {
+        User mockUser = new User("test.com", "password", "John", "Doe", "JDoe");
         // tried to change to null but what is unique in post to test a null value
-        Post mockPost = new Post(1, "Test text for upsert", "Profile pic",new ArrayList<>(), mockedUserObject, PostType.Top, mockLikesList);
+        Post mockPost = new Post(1, "Test text for upsert", "Profile pic", new ArrayList<>(), mockedUserObject, PostType.Top, mockLikesList);
 
         lenient().when(postRepository.save(mockedPostObject)).thenReturn(mockedPostObject);
         //assertThrows(IllegalAccessError.class, () -> postService.upsert(mockPost));
-        verify(postRepository,never()).save(mockPost);
+        verify(postRepository, never()).save(mockPost);
     }
 
 
@@ -103,7 +103,7 @@ public class PostServiceTest {
         //creating empty ArrayList
         List<Post> expectedList = new ArrayList<Post>();
         //creating test post for ArrayList
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), mockedUserObject, PostType.Top, mockLikesList);
+        Post expectedPost = new Post(1, "This is a test post", "image.com", new ArrayList<>(), mockedUserObject, PostType.Top, mockLikesList);
 
         //adding post to array
         expectedList.add(expectedPost);
@@ -117,6 +117,7 @@ public class PostServiceTest {
         assertEquals(expectedPost, resultList.get(0));
 
     }
+
     @Test
     void getAllTopFail() {
         //creating empty ArrayList
@@ -139,7 +140,7 @@ public class PostServiceTest {
     @Test
     void findByIdTestSuccess() {
         List<Post> expectedList = new ArrayList<Post>();
-        Post mockPost = new Post(2,"First post", "FirstPic", new ArrayList<>(), mockedUserObject, PostType.Top,mockLikesList);
+        Post mockPost = new Post(2, "First post", "FirstPic", new ArrayList<>(), mockedUserObject, PostType.Top, mockLikesList);
 
         when(postRepository.findById(2)).thenReturn(Optional.of(mockPost));
         Optional<Post> resultPost = postService.findById(2);
@@ -150,17 +151,18 @@ public class PostServiceTest {
     @Test
     void findByIdTestFail() {
         List<Post> expectedList = new ArrayList<Post>();
-        Post mockPost = new Post(2,"First post", "FirstPic", new ArrayList<>(), mockedUserObject, PostType.Top,mockLikesList);
+        Post mockPost = new Post(2, "First post", "FirstPic", new ArrayList<>(), mockedUserObject, PostType.Top, mockLikesList);
 
         when(postRepository.findById(2)).thenReturn(Optional.of(mockPost));
         Optional<Post> resultPost = postService.findById(2);
         assertNotEquals(resultPost.get(), mockPost.getId());
 
     }
+
     @Test
     void findByIdTestFail2() {
         List<Post> expectedList = new ArrayList<Post>();
-        Post mockPost = new Post(2,"First post", "FirstPic", new ArrayList<>(), mockedUserObject, null,mockLikesList);
+        Post mockPost = new Post(2, "First post", "FirstPic", new ArrayList<>(), mockedUserObject, null, mockLikesList);
 
         when(postRepository.findById(2)).thenReturn(Optional.of(mockPost));
         Optional<Post> resultPost = postService.findById(2);
@@ -175,25 +177,17 @@ public class PostServiceTest {
         postService.deletePost(testPost.getId());
         verify(postRepository).deleteById(testPost.getId());
     }
-/*
-        List<Post> removePostTest = new ArrayList<>();
-        removePostTest.add(testPost);// gives us a list of mock list with a list of mock post objects
-        doNothing().when(postService.deletePost(2));
-        verify(userRepository).deleteById(testUser2.getId());
-        //doNothing().when(postService.deletePost(2));
-        //verify(postService, times(1)).deletePost(2);
-    }*/
-        //when(postRepository.deleteById(2)).thenReturn(testFeed);
 
-
-    //@Test
+    @Test
     void deletePostTestFail() {
+        Post testPost = new Post(1, "First post", "FirstPic", new ArrayList<>(), mockedUserObject, PostType.Top, mockLikesList);
 
+        postService.deletePost(21);
+        verify(postRepository, never()).deleteById((int) testPost.getId());
     }
 
     @Test
-    void getFeedForUserTestSuccess()
-    {
+    void getFeedForUserTestSuccess() {
         // tried to change to null but what is unique in post to test a null value
 
         List<Post> testFeed = new ArrayList<>();
@@ -205,24 +199,26 @@ public class PostServiceTest {
 
         userTestfollowing.add((testFollowedUser));
         //when(mockedUserObject.getFollowing()).thenReturn(userTestfollowing);// should return the users we are following
-        when(postRepository.findByAuthorInAndPostType(userTestfollowing,PostType.Top)).thenReturn(Optional.of(testFeed));// we are finding all of the users we are following by top Post
+        when(postRepository.findByAuthorInAndPostType(userTestfollowing, PostType.Top)).thenReturn(Optional.of(testFeed));// we are finding all of the users we are following by top Post
         Optional<List<Post>> expectedFeed = postService.getFeedForUser(userTestfollowing);// testing our hard coded userTestFollowing against the expected value
-        assertEquals(expectedFeed,Optional.of(testFeed));// if the expectedFeed and userTestFollowing equal it will return successful
+        assertEquals(expectedFeed, Optional.of(testFeed));// if the expectedFeed and userTestFollowing equal it will return successful
 
 
     }
+
     @Test
     void getFeedForUserTestFail() {
         List<Post> testFeed = new ArrayList<>();
         testFeed.add(mockedPostObject);
         List<User> addUserFollowingTest = new ArrayList<>();
         addUserFollowingTest.add(testFollowedUser);
-        lenient().when(postRepository.findByAuthorInAndPostType(addUserFollowingTest,PostType.Top)).thenReturn(Optional.of(testFeed));
+        lenient().when(postRepository.findByAuthorInAndPostType(addUserFollowingTest, PostType.Top)).thenReturn(Optional.of(testFeed));
         Optional<List<Post>> expectedFeed = postService.getAllPostsByUser(testFollowedUser);
-        assertNotEquals(expectedFeed,addUserFollowingTest);
+        assertNotEquals(expectedFeed, addUserFollowingTest);
 
 
     }
+
     @Test
     public void addCommentTestSuccess() {
         //create an empty array to beging with for our comments
@@ -240,26 +236,28 @@ public class PostServiceTest {
         //with this last one, we are comparing the mockedComment that got added with our postService to our comment that was added to our actual post
         assertEquals(mockedComment, actualPost.getComments().get(0));
     }
+
     @Test
     public void addCommentTestFail() {
-        Post actualComment = new Post("post","image.com",new ArrayList<>(),mockedUserObject, Top);
+        Post actualComment = new Post("post", "image.com", new ArrayList<>(), mockedUserObject, Top);
         List<Post> commentList = new ArrayList<>();
         commentList.add(actualComment);
         mockedPostObject.setComments(commentList);
         when(mockedPostObject.getComments()).thenReturn(commentList);
         Post expectedPost = postService.addComment(mockedPostObject, actualComment);
 
-        assertNotEquals(mockedComment,actualComment);
+        assertNotEquals(mockedComment, actualComment);
     }
+
     @Test
     public void deleteCommentTestSuccess() {
         List<Post> commentList = new ArrayList<>();
         commentList.add(mockedComment);
         mockedPostObject.setComments(commentList);
         when(mockedPostObject.getComments()).thenReturn(commentList);
-        Post expectedPost = postService.deleteComment(mockedPostObject,mockedComment);
+        Post expectedPost = postService.deleteComment(mockedPostObject, mockedComment);
         assertEquals(mockedPostObject, expectedPost);
-        assertEquals(0,expectedPost.getComments().size());
+        assertEquals(0, expectedPost.getComments().size());
     }
 
     @Test
@@ -268,14 +266,15 @@ public class PostServiceTest {
         commentList.add(mockedComment);
         mockedPostObject.setComments(commentList);
         when(mockedPostObject.getComments()).thenReturn(commentList);
-        Post expectedPost = postService.deleteComment(mockedPostObject,mockedComment);
+        Post expectedPost = postService.deleteComment(mockedPostObject, mockedComment);
         assertNotEquals(expectedPost, null);
         assertNotEquals(expectedPost.getComments().size(), (Integer) null);
     }
+
     @Test
     public void addPostLikeTestSuccess() {
         //testUser1 is the liker and testUser2 is the author
-        User testUser1 = new User("test.com","password","John","Doe", "JDoe");
+        User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
@@ -283,14 +282,15 @@ public class PostServiceTest {
         postService.addPostLike(mockedPostObject, testUser1);
         assertEquals(likesList, mockedPostObject.getLikes());
     }
+
     //still needs tweaking
     @Test
     public void addPostLikeTestFail() {
-        User testUser1 = new User("test.com","password","John","Doe", "JDoe");
+        User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        Post testpost = new Post(1,"test","www",new ArrayList<>(),testUser2,Top,likesList);
+        Post testpost = new Post(1, "test", "www", new ArrayList<>(), testUser2, Top, likesList);
 
         // test the addPostLike method
         Post result = postService.addPostLike(testpost, testUser1);
@@ -298,25 +298,27 @@ public class PostServiceTest {
         // assert that the result is false, indicating that the like was not successfully added
         assertNotNull(result);
     }
+
     @Test
     public void removePostLikeTestSuccess() {
-        User testUser1 = new User("test.com","password","John","Doe", "JDoe");
+        User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        Post testpost = new Post(1,"test","www",new ArrayList<>(),testUser2,Top,likesList);
+        Post testpost = new Post(1, "test", "www", new ArrayList<>(), testUser2, Top, likesList);
         Post result = postService.removePostLike(testpost, testUser1);
         assertNotNull(result);
         assertFalse(result.getLikes().contains(testUser1));
         //verify(postRepository, times(1)).save(result);
     }
+
     @Test
     public void removePostLikeTestFail() {
-        User testUser1 = new User("test.com","password","John","Doe", "JDoe");
+        User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        Post testpost = new Post(1,"test","www",new ArrayList<>(),testUser2,Top,likesList);
+        Post testpost = new Post(1, "test", "www", new ArrayList<>(), testUser2, Top, likesList);
         Post result = postService.removePostLike(testpost, testUser1);
 
         assertEquals(1, result.getLikes().size());

@@ -51,7 +51,7 @@ public class UserControllerTest {
         even if they are going to have null values that we aren't checking in this particularly method.
         Followers and Following are both null when a user is created, but must be passed along as null
         in the constructor*/
-        User testUser2 = new User(2,"test2.com","password2","Bob","Smith","BSmi",null,null,"image2.com");
+        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         //Using this mockMvc perform a post request to the "/users" URI endpoint in controller
         this.mockMvc.perform(post("/users")
                         //we want our request to be Application_JSON mediatype for our server to read it
@@ -76,20 +76,16 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.username", is(testUser2.getUsername())))
                 .andExpect(jsonPath("$.imageUrl", is(testUser2.getImageUrl())));
     }
+
     @Test
     void createNewUserWithoutEmailFail() throws Exception {
         User testUser2 = new User(2, null, "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         String requestBody = objectMapper.writeValueAsString(testUser2);
         this.mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
-//<<<<<<< Updated upstream
                         .content(requestBody))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
-/*=======
-                        .content((byte[]) null))
-                .andExpect(status().isBadRequest());
->>>>>>> Stashed changes*/
     }
 
 
@@ -105,6 +101,7 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(userList.size())));
     }
+
     //passes but isn't checking correctly
     @Test
     void getAllUsersTestFail() throws Exception {
@@ -119,16 +116,17 @@ public class UserControllerTest {
 
     @Test
     void getUserByIdTestSuccess() throws Exception {
-        User testUser2 = new User(2,"test2.com","password2","Bob","Smith","BSmi",null,null,"image2.com");
+        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
 
         given(userService.findById(2)).willReturn(Optional.of(testUser2));
         this.mockMvc.perform(get("/users/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(testUser2.getId())));
     }
+
     @Test
     void getUserByIdTestFail() throws Exception {
-        User testUser2 = new User(2,"test2.com","password2","Bob","Smith","BSmi",null,null,"image2.com");
+        User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
 
         given(userService.findById(3)).willReturn(Optional.empty());
         this.mockMvc.perform(get("/users/3"))
@@ -146,6 +144,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.username", is(testUser2.getUsername())));
 
     }
+
     @Test
     void findByUsernameTestFail() throws Exception {
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
@@ -183,6 +182,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.password", is(testUser2.getPassword())));
 
     }
+
     @Test
     void editPasswordTestFail() throws Exception {
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
@@ -213,6 +213,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(testUser2.getId())))
                 .andExpect(jsonPath("$.email", is(testUser2.getEmail())));
     }
+
     @Test
     void editEmailTestFail() throws Exception {
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
@@ -242,6 +243,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(testUser2.getId())))
                 .andExpect(jsonPath("$.username", is(testUser2.getUsername())));
     }
+
     @Test
     void editUsernameTestFail() throws Exception {
         String editUsername = "IMsb";
@@ -270,6 +272,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(testUser2.getId())))
                 .andExpect(jsonPath("$.imageUrl", is(testUser2.getImageUrl())));
     }
+
     @Test
     void updateImageUrlTestFail() throws Exception {
         String editImageUrl = "com.image";
@@ -284,15 +287,13 @@ public class UserControllerTest {
 
 
     @Test
-    void addFollowerTestSuccess() throws Exception{
+    void addFollowerTestSuccess() throws Exception {
         User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
         testUser1.setId(1);
         testUser1.setFollowers(new ArrayList<>());
         testUser1.setFollowing(new ArrayList<>());
 
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", new ArrayList<>(), new ArrayList<>(), "image2.com");
-        //testUser2.setFollowers(new ArrayList<>());
-        //testUser2.setFollowing(new ArrayList<>());
         List<User> followSuccess = new ArrayList<>();
         followSuccess.add(testUser1);
         followSuccess.add(testUser2);
@@ -308,8 +309,9 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[*].id", hasItems(testUser1.getId(), testUser2.getId())))
                 .andExpect(jsonPath("$.length()", is(2)));
     }
+
     @Test
-    void addFollowerTestFail() throws Exception{
+    void addFollowerTestFail() throws Exception {
         User testUser1 = new User("test.com", "password", "John", "Doe", "JDoe");
         testUser1.setId(1);
 
@@ -342,6 +344,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].id", is(followedUser.getId())));
 
     }
+
     @Test
     void removeFollowerTestFail() throws Exception {
         User follower = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
@@ -364,8 +367,8 @@ public class UserControllerTest {
         List<Post> feed = new ArrayList<>();
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        feed.add(new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, PostType.Top,likesList));
-        feed.add(new Post(2,"Test post 2","image2.com",new ArrayList<>(), testUser2, PostType.Top, likesList));
+        feed.add(new Post(1, "This is a test post", "image.com", new ArrayList<>(), testUser2, PostType.Top, likesList));
+        feed.add(new Post(2, "Test post 2", "image2.com", new ArrayList<>(), testUser2, PostType.Top, likesList));
 
         when(userService.getFeedForUser(optionalUser.get())).thenReturn(feed);
 
@@ -375,12 +378,14 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[1].id", is(2)));
     }
+
     @Test
     void getFeedForUserTestFail() throws Exception {
         given(userService.findById(1)).willReturn(Optional.empty());
         mockMvc.perform(get("/users/1/feed"))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     void getAllPostsByAUserTestSuccess() throws Exception {
         User testUser = new User(1, "test.com", "password", "John", "Doe", "JDoe", null, null, "image.com");
@@ -400,6 +405,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[1].id", is(2)));
     }
+
     @Test
     void getAllPostsByAUserTestFail() throws Exception {
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
