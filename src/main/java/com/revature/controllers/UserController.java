@@ -1,9 +1,7 @@
 package com.revature.controllers;
 
 import com.revature.models.Post;
-import com.revature.models.PostType;
 import com.revature.models.User;
-import com.revature.services.PostService;
 import com.revature.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +30,8 @@ public class UserController {
 
     // Testing Method: Get All Users
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {return ResponseEntity.ok(this.userService.getAll());
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(this.userService.getAll());
     }
 
     @GetMapping("/{id}")
@@ -52,19 +51,11 @@ public class UserController {
         }
         return ResponseEntity.ok(userOptional.get());
     }
-//    @GetMapping("/user")
-//    public ResponseEntity<User> findByUsername(@RequestBody String username) {
-//        Optional<User> userOptional = userService.findByUsername(username);
-//        if(!userOptional.isPresent()){
-//            return ResponseEntity.badRequest().build();
-//        }
-//        return ResponseEntity.ok(userOptional.get());
-//    }
 
     @PutMapping("/{id}/password")
     public ResponseEntity editPassword(@PathVariable int id, @RequestBody String editString) {
         Optional<User> userOptional = userService.findById(id);
-        if(!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             return ResponseEntity.badRequest().body("No users were found with this id.");
         }
         User newUser = userOptional.get();
@@ -93,12 +84,12 @@ public class UserController {
     @PutMapping("/{id}/username")
     public ResponseEntity editUsername(@PathVariable int id, @RequestBody String editString) {
         Optional<User> userExist = userService.findByUsername(editString);
-        if(userExist.isPresent()){
+        if (userExist.isPresent()) {
             return ResponseEntity.badRequest().body("This username is already being used.");
         }
 
         Optional<User> userOptional = userService.findById(id);
-        if(!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             return ResponseEntity.badRequest().body("No users were found with this id.");
         }
         User newUser = userOptional.get();
@@ -122,7 +113,7 @@ public class UserController {
     @PutMapping("/{id}/follow")
     public ResponseEntity addFollower(@PathVariable int id, @RequestBody int followerId) {
         Optional<User> followedUserOpt = userService.findById(id);
-        if (!followedUserOpt.isPresent()){
+        if (!followedUserOpt.isPresent()) {
             return ResponseEntity.badRequest().body("No users were found with this id. Please provide a valid id of the user to follow.");
         }
         Optional<User> followerOpt = userService.findById(followerId);
@@ -136,7 +127,7 @@ public class UserController {
     @PutMapping("/{id}/unfollow")
     public ResponseEntity removeFollower(@PathVariable int id, @RequestBody int followerId) {
         Optional<User> followedUserOpt = userService.findById(id);
-        if (!followedUserOpt.isPresent()){
+        if (!followedUserOpt.isPresent()) {
             return ResponseEntity.badRequest().body("No users were found with this id. Please provide a valid id of the user to follow.");
         }
         Optional<User> followerOpt = userService.findById(followerId);
@@ -146,15 +137,16 @@ public class UserController {
 
         return ResponseEntity.ok(userService.removeFollower(followedUserOpt.get(), followerOpt.get()));
     }
+
     @GetMapping("/{id}/feed")
-    public ResponseEntity getFeedForUser(@PathVariable int id){
+    public ResponseEntity getFeedForUser(@PathVariable int id) {
         Optional<User> optionalUser = userService.findById(id);
-        if(!optionalUser.isPresent()){
+        if (!optionalUser.isPresent()) {
             return ResponseEntity.badRequest().body("No users were found with this id.");
         }
         List<Post> feed = userService.getFeedForUser(optionalUser.get());
-        if(feed == null) {
-           return ResponseEntity.badRequest().build();
+        if (feed == null) {
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(feed);
     }
@@ -162,7 +154,7 @@ public class UserController {
     @GetMapping("/{id}/posts")
     public ResponseEntity getAllPostsByAUser(@PathVariable int id) {
         Optional<User> optionalUser = userService.findById(id);
-        if(!optionalUser.isPresent()){
+        if (!optionalUser.isPresent()) {
             return ResponseEntity.badRequest().body("No users were found with this id.");
         }
         Optional<List<Post>> postList = userService.getAllPostsByAUser(optionalUser.get());

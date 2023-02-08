@@ -1,17 +1,14 @@
 package com.revature.controllers;
 
-import java.util.List;
-import java.util.Optional;
-
-import com.revature.models.PostType;
-import com.revature.models.User;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
 import com.revature.annotations.Authorized;
 import com.revature.models.Post;
+import com.revature.models.User;
 import com.revature.services.PostService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/posts")

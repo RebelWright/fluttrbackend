@@ -1,9 +1,7 @@
 package com.revature.services;
 
 import com.revature.models.Post;
-import com.revature.models.PostType;
 import com.revature.models.User;
-import com.revature.repositories.PostRepository;
 import com.revature.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,10 +78,11 @@ public class UserService {
         followSuccess.add(follower);
         return followSuccess;
     }
-    public List<Post> getFeedForUser(User user){
+
+    public List<Post> getFeedForUser(User user) {
         List<User> following = user.getFollowing();
         Optional<List<Post>> feedOptional = postService.getFeedForUser(following);
-        if(!feedOptional.isPresent()){
+        if (!feedOptional.isPresent()) {
             return null;
         }
         return feedOptional.get();
