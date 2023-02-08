@@ -82,9 +82,14 @@ public class UserControllerTest {
         String requestBody = objectMapper.writeValueAsString(testUser2);
         this.mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
+//<<<<<<< Updated upstream
                         .content(requestBody))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
+/*=======
+                        .content((byte[]) null))
+                .andExpect(status().isBadRequest());
+>>>>>>> Stashed changes*/
     }
 
 

@@ -95,8 +95,13 @@ class PostControllerTest {
 
         ResultActions resultActions = mockMvc.perform(put("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
+//<<<<<<< Updated upstream
                         .content(objectMapper.writeValueAsString(unexpectedPost)))
                 .andExpect(status().isOk());
+/*=======
+                        .content((byte[]) null))
+                .andExpect(status().isBadRequest());
+>>>>>>> Stashed changes*/
     }
 
     @Test

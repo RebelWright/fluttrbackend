@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.password", is(testUser2.getPassword())))
                 .andExpect(jsonPath("$.firstName", is(testUser2.getFirstName())))
                 .andExpect(jsonPath("$.lastName", is(testUser2.getLastName())))
-                .andExpect(jsonPath("$.username", is(testUser2.getUsername())));
+                .andExpect(jsonPath("$.username", is(testUser2.getUsername()))).andDo(print());
     }
 
     @Test
@@ -94,27 +95,18 @@ public class AuthControllerTest {
         RegisterRequest testReg = new RegisterRequest();
         testReg.setEmail("test.com");
         testReg.setUsername("JDoe");
-        given(authService.register(testUser1)).willReturn(testUser1);
+        given(authService.register(any())).willReturn(testUser1);
 
         String requestBody = objectMapper.writeValueAsString(testUser1);
-       this.mockMvc.perform(post("/auth/register")
+        this.mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testUser1)))
-                .andExpect(status().isCreated()).andDo(print()).andReturn().getResponse().getContentAsString();
-
-        //String content =
-                /*.andExpect(jsonPath("$.email".a, is(testUser1.getEmail())))
+                        .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.email", is(testUser1.getEmail())))
                 .andExpect(jsonPath("$.password", is(testUser1.getPassword())))
                 .andExpect(jsonPath("$.firstName", is(testUser1.getFirstName())))
                 .andExpect(jsonPath("$.lastName", is(testUser1.getLastName())))
-                .andExpect(jsonPath("$.username", is(testUser1.getUsername())))*/
-       /* .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.email[0]", is("test.com")))
-                .andExpect(jsonPath("$.password", is(testUser1.getPassword())))
-                .andExpect(jsonPath("$.firstName", is(testUser1.getFirstName())))
-                .andExpect(jsonPath("$.lastName", is(testUser1.getLastName())))
-                .andExpect(jsonPath("$.username", is(testUser1.getUsername())))
-                .andExpect(jsonPath("$.imageUrl", is(testUser1.getImageUrl())))*/
+                .andExpect(jsonPath("$.username", is(testUser1.getUsername())));
     }
 
 
@@ -126,12 +118,10 @@ public class AuthControllerTest {
         testReg.setEmail("test.com");
         testReg.setUsername("JDoe");
         given(authService.register(testUser1)).willReturn(null);
-        //given(authService.register(testUser1)).willReturn(testUser1);
-        String requestBody = objectMapper.writeValueAsString(testUser1);
         this.mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content((byte[]) null))
-                .andExpect(status().is(400));
+                .andExpect(status().isBadRequest());
     }
 
 }
