@@ -1,25 +1,19 @@
 package com.revature.services;
 
 import com.revature.models.Post;
-import com.revature.models.PostType;
 import com.revature.models.User;
 import com.revature.repositories.UserRepository;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mock.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -199,7 +193,6 @@ class UserServiceTest {
         expectedFollowing.add(testFollowedUser);
         //verifying that our mockFollowerUser had it's following list updated with the expectedFollowing list
         verify(testFollowerUser).setFollowing(expectedFollowing);
-
     }
 
     @Test
@@ -247,7 +240,6 @@ class UserServiceTest {
 
         List<User> unFollowFailureList = userService.removeFollower(testFollowedUser, testFollowerUser);
         assertEquals(unFollowFailureList.size(), 2);
-
     }
 
     @Test
@@ -260,8 +252,6 @@ class UserServiceTest {
         when(postService.getFeedForUser(following)).thenReturn(Optional.of(expectedFeed));
         List<Post> actualFeed = userService.getFeedForUser(mockedUserObject);
         assertEquals(expectedFeed, actualFeed);
-
-
     }
 
     @Test
@@ -274,7 +264,6 @@ class UserServiceTest {
         when(postService.getFeedForUser(following)).thenReturn(Optional.empty());
         List<Post> actualFeed = userService.getFeedForUser(mockedUserObject);
         assertNull(actualFeed);
-
     }
 
     @Test

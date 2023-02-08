@@ -4,7 +4,6 @@ import com.revature.models.Post;
 import com.revature.models.PostType;
 import com.revature.models.User;
 import com.revature.repositories.PostRepository;
-import com.revature.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
