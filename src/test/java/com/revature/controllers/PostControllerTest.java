@@ -25,6 +25,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = PostController.class)
@@ -101,12 +102,6 @@ class PostControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void getAllTopPostsTestSuccess() {
-    }
-    @Test
-    void getAllTopPostsTestFail() {
-    }
 
     @Test
     void createPostTestSuccess() throws Exception {
@@ -368,4 +363,75 @@ class PostControllerTest {
 
 
     }
+
+    @Test
+    public void getAllTopPostTestSuccessful() throws Exception {
+        User testUser = new User(1, "test@Email.com", "password", "firstN", "LastN", "Username", null, null, "image.com");
+        List<Post> listTopPost = new ArrayList<>();
+        List<User> likesList = new ArrayList<>();
+        likesList.add(testUser);
+        Post testPost = new Post(1, "String Text", "String URL",new ArrayList<>(), testUser, PostType.Top, likesList);
+
+        listTopPost.add(testPost);
+        // listTopPost.add(new Post(3,"test post3","image3.com",new ArrayList<>(),testUser, PostType.Top,4));
+        given(postService.getAllTop()).willReturn(listTopPost);
+        this.mockMvc.perform(get("/posts/feed"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()",is(listTopPost.size())));
+
+    }
+
+
+    @Test
+    public void getAllTopPostTestFail() throws Exception {
+        User testUser = new User(1, "test@Email.com", "password", "firstN", "LastN", "Username", null, null, "image.com");
+        List<Post> listTopPost = new ArrayList<>();
+        List<User> likesList = new ArrayList<>();
+        likesList.add(testUser);
+        Post testPost = new Post(-1, "String Text", "String URL", new ArrayList<>(), testUser, Top, likesList);
+        List<Post> badList = new ArrayList<>();
+
+        listTopPost.add(testPost);
+        listTopPost.add(new Post(3,"test post3","image3.com",new ArrayList<>(),testUser, PostType.Reply,likesList));
+        given(postService.getAllTop()).willReturn(listTopPost);
+        this.mockMvc.perform(get("/posts/feed"))
+                .andExpect(jsonPath("$.size()", is(listTopPost.size())))
+                .andExpect(status().is(200)).andDo(print()).andReturn().getResponse().getContentAsString();
+    }
+
+
+    @Test
+    public void getPostByIdTestSuccessful() throws Exception {
+        User testUser3 = new User("testing@t.com", "password", "Test", "Dummy", "testdummy");
+        Post testPost1 = new Post("testing text", " testing string URL", new ArrayList<>(), testUser3, PostType.Top);
+        testUser3.setId(4);
+        testPost1.setId(4);
+        Optional<Post> optionalPost = Optional.of(testPost1);
+        List<Post> ListFeed = new ArrayList<>();
+        given(postService.findById(4)).willReturn(optionalPost);
+        //given(postService.findById(testUser3.getId())).willReturn(Optional.of(testPost1));
+        this.mockMvc.perform(get("/posts/4"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(testPost1.getId())));
+    }
+
+    @Test
+    public void getPostByIdTestFail() throws Exception {
+        User testUser3 = new User("testing@t.com", "password", "Test", "Dummy", "testdummy");
+        User testUser4 = new User("testing@t.com", "password", "Test", "Dummy", "testdummy");
+        Post testPost1 = new Post("testing text", " testing string URL", new ArrayList<>(), testUser3, PostType.Top);
+        Post testPost2 = new Post("testing text", " testing string URL", new ArrayList<>(), testUser3, PostType.Top);
+        testUser3.setId(4);
+        testUser4.setId(5);
+        testPost1.setId(4);
+        testPost2.setId(5);
+        Optional<Post> optionalPost = Optional.of(testPost1);
+        List<Post> ListFeed = new ArrayList<>();
+        given(postService.findById(4)).willReturn(optionalPost);
+        //given(postService.findById(testUser3.getId())).willReturn(Optional.of(testPost1));
+        this.mockMvc.perform(get("/posts/5"))
+                .andExpect(status().is(400)).andDo(print()).andReturn().getResponse().getContentAsString();
+    }
+
+
 }
