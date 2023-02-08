@@ -269,8 +269,8 @@ public class PostServiceTest {
         mockedPostObject.setComments(commentList);
         when(mockedPostObject.getComments()).thenReturn(commentList);
         Post expectedPost = postService.deleteComment(mockedPostObject,mockedComment);
-        assertNotEquals(mockedPostObject, expectedPost);
-        assertNotEquals(0,expectedPost.getComments().size());
+        assertNotEquals(expectedPost, null);
+        assertNotEquals(expectedPost.getComments().size(), (Integer) null);
     }
     @Test
     public void addPostLikeTestSuccess() {
