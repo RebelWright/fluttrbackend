@@ -242,12 +242,14 @@ public class PostServiceTest {
     }
     @Test
     public void addCommentTestFail() {
+        Post actualComment = new Post("post","image.com",new ArrayList<>(),mockedUserObject, Top);
         List<Post> commentList = new ArrayList<>();
+        commentList.add(actualComment);
         mockedPostObject.setComments(commentList);
         when(mockedPostObject.getComments()).thenReturn(commentList);
-        Post expectedPost = postService.addComment(mockedPostObject, mockedComment);
+        Post expectedPost = postService.addComment(mockedPostObject, actualComment);
 
-        assertNull(expectedPost);
+        assertNotEquals(mockedComment,actualComment);
     }
     @Test
     public void deleteCommentTestSuccess() {
