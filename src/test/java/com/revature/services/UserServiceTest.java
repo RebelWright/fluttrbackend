@@ -41,29 +41,30 @@ class UserServiceTest {
 
     @Test
     void findByCredentialsSuccessTest() {
-        User mockUser = new User("test.com","password","John","Doe", "JDoe");
+        User mockUser = new User("test.com", "password", "John", "Doe", "JDoe");
         when(userRepository.findByEmailAndPassword("test.com", "password")).thenReturn(Optional.of(mockUser));
-        Optional<User> resultUser = userService.findByCredentials("test.com","password");
-        assertEquals(resultUser.get().getEmail(),mockUser.getEmail());
-        assertEquals(resultUser.get().getPassword(),mockUser.getPassword());
+        Optional<User> resultUser = userService.findByCredentials("test.com", "password");
+        assertEquals(resultUser.get().getEmail(), mockUser.getEmail());
+        assertEquals(resultUser.get().getPassword(), mockUser.getPassword());
 
     }
+
     @Test
     void findByCredentialsSuccessFail() {
-        User mockUser = new User("test.com","password","John","Doe", "JDoe");
+        User mockUser = new User("test.com", "password", "John", "Doe", "JDoe");
         when(userRepository.findByEmailAndPassword("test.com", "password")).thenReturn(Optional.of(mockUser));
-        Optional<User> resultUser = userService.findByCredentials("test.com","password");
-        assertNotEquals("com.test",mockUser.getEmail());
-        assertNotEquals("drowssap",mockUser.getPassword());
-        assertNotEquals(resultUser.get().getEmail(),"com.test");
-        assertNotEquals(resultUser.get().getPassword(),"drowssap");
+        Optional<User> resultUser = userService.findByCredentials("test.com", "password");
+        assertNotEquals("com.test", mockUser.getEmail());
+        assertNotEquals("drowssap", mockUser.getPassword());
+        assertNotEquals(resultUser.get().getEmail(), "com.test");
+        assertNotEquals(resultUser.get().getPassword(), "drowssap");
 
     }
 
 
     @Test
     void findByIdTestSuccess() {
-        User mockUser = new User("test.com","password","John","Doe", "JDoe");
+        User mockUser = new User("test.com", "password", "John", "Doe", "JDoe");
         mockUser.setId(1);
         when(userRepository.findById(1)).thenReturn(Optional.of(mockUser));
         Optional<User> resultUser = userService.findById(1);
@@ -72,14 +73,13 @@ class UserServiceTest {
 
     @Test
     void findByIdTestFail() {
-        User mockUser = new User("test.com","password","John","Doe", "JDoe");
+        User mockUser = new User("test.com", "password", "John", "Doe", "JDoe");
         mockUser.setId(1);
         when(userRepository.findById(1)).thenReturn(Optional.of(mockUser));
         Optional<User> resultUser = userService.findById(1);
         assertNotEquals(resultUser.get().getId(), 100);
         assertNotEquals(100, mockUser.getId());
     }
-
 
 
     @Test
@@ -89,10 +89,11 @@ class UserServiceTest {
         verify(userRepository, times(1)).save(mockedUserObject);
         assertEquals(mockedUserObject, resultUser);
     }
+
     @Test
     void saveUserTestFail() {
         //mockUser object intentionally has a null username field in order to fail test and trigger exception
-        User mockUser = new User("test.com","password","John","Doe", null);
+        User mockUser = new User("test.com", "password", "John", "Doe", null);
         //using Exceptions for failing methods that don't return an object when succeeding
         when(userRepository.save(mockUser)).thenThrow(new IllegalArgumentException());
         /*assertThrows takes in 2 arguments(exceptions) and compares the first exception to the second
@@ -120,6 +121,7 @@ class UserServiceTest {
         //our actual result list
         assertEquals(expectedList.get(0), resultList.get(0));
     }
+
     @Test
     void getAllUsersTestFail() {
         //creating empty ArrayList
@@ -140,17 +142,17 @@ class UserServiceTest {
     }
 
 
-
     @Test
     void findByUsernameTestSuccess() {
-        User mockUser = new User("test.com","password","John","Doe", "JDoe");
+        User mockUser = new User("test.com", "password", "John", "Doe", "JDoe");
         when(userRepository.findByUsername("JDoe")).thenReturn(Optional.of(mockUser));
         Optional<User> resultUser = userService.findByUsername("JDoe");
         assertEquals(resultUser.get().getUsername(), mockUser.getUsername());
     }
+
     @Test
     void findByUsernameTestFail() {
-        User mockUser = new User("test.com","password","John","Doe", "JDoe");
+        User mockUser = new User("test.com", "password", "John", "Doe", "JDoe");
         when(userRepository.findByUsername("JDoe")).thenReturn(Optional.of(mockUser));
         Optional<User> resultUser = userService.findByUsername("JDoe");
         assertNotEquals(resultUser.get().getUsername(), "Eodj");
@@ -159,14 +161,15 @@ class UserServiceTest {
 
     @Test
     void findByEmailTestSuccess() {
-        User mockUser = new User("test.com","password","John","Doe", "JDoe");
+        User mockUser = new User("test.com", "password", "John", "Doe", "JDoe");
         when(userRepository.findByEmail("test.com")).thenReturn(Optional.of(mockUser));
         Optional<User> resultUser = userService.findByEmail("test.com");
         assertEquals(resultUser.get().getEmail(), mockUser.getEmail());
     }
+
     @Test
     void findByEmailTestFail() {
-        User mockUser = new User("test.com","password","John","Doe", "JDoe");
+        User mockUser = new User("test.com", "password", "John", "Doe", "JDoe");
         when(userRepository.findByEmail("test.com")).thenReturn(Optional.of(mockUser));
         Optional<User> resultUser = userService.findByEmail("test.com");
         assertNotEquals(resultUser.get().getEmail(), "com.test");
@@ -184,8 +187,8 @@ class UserServiceTest {
         //testing that the mockFollowSuccessList is actually 2 (like it should be)
         assertEquals(mockFollowSuccessList.size(), 2);
         //testing that each of the mock user objects were added to our mockFollowSuccessList
-        assertEquals(mockFollowSuccessList.get(0),testFollowedUser);
-        assertEquals(mockFollowSuccessList.get(1),testFollowerUser);
+        assertEquals(mockFollowSuccessList.get(0), testFollowedUser);
+        assertEquals(mockFollowSuccessList.get(1), testFollowerUser);
         //creating an expected followers list and adding our testFollowerUser to that list
         List<User> expectedFollowers = new ArrayList<>();
         expectedFollowers.add(testFollowerUser);
@@ -198,6 +201,7 @@ class UserServiceTest {
         verify(testFollowerUser).setFollowing(expectedFollowing);
 
     }
+
     @Test
     void addUserToFollowingListTestFail() {
         //when takes in testFollowedUser mock object, tries to get followers and is expected to throw a runtime
@@ -205,7 +209,7 @@ class UserServiceTest {
         when(testFollowedUser.getFollowers()).thenThrow(new RuntimeException("Error adding followed user"));
         /*assertThrows takes in 2 arguments(exceptions) and compares the first exception to the second
         using a lambda function that contains the code that should throw the exception*/
-        assertThrows(RuntimeException.class, () -> userService.addFollower(testFollowedUser,testFollowerUser));
+        assertThrows(RuntimeException.class, () -> userService.addFollower(testFollowedUser, testFollowerUser));
         //finally the verify methods in this case are expected to never actually run if the exception was
         //correctly thrown.
         verify(testFollowedUser, never()).setFollowers(any());
@@ -224,8 +228,8 @@ class UserServiceTest {
 
         List<User> unFollowSuccessList = userService.removeFollower(testFollowedUser, testFollowerUser);
         assertEquals(unFollowSuccessList.size(), 2);
-        assertEquals(unFollowSuccessList.get(0),testFollowedUser);
-        assertEquals(unFollowSuccessList.get(1),testFollowerUser);
+        assertEquals(unFollowSuccessList.get(0), testFollowedUser);
+        assertEquals(unFollowSuccessList.get(1), testFollowerUser);
 
         List<User> expectedFollowers = new ArrayList<>();
         verify(testFollowedUser).setFollowers(expectedFollowers);
@@ -259,8 +263,9 @@ class UserServiceTest {
 
 
     }
+
     @Test
-    void getFeedForUserTestFail(){
+    void getFeedForUserTestFail() {
         List<User> following = new ArrayList<>();
         following.add(testFollowedUser);
         when(mockedUserObject.getFollowing()).thenReturn(following);
@@ -271,6 +276,7 @@ class UserServiceTest {
         assertNull(actualFeed);
 
     }
+
     @Test
     void getAllPostsByAUserTestSuccess() {
         User mockedUser = new User("test.com", "somepassword", "First", "Last", "username");
@@ -284,6 +290,7 @@ class UserServiceTest {
         Optional<List<Post>> allUserPostsOptional = postService.getAllPostsByUser(mockedUser);
         assertEquals(allUserPostsOptional, Optional.of(userPosts));
     }
+
     @Test
     void getAllPostsByAUserTestFail() {
         User mockedUser = new User("test.com", "somepassword", "First", "Last", "username");

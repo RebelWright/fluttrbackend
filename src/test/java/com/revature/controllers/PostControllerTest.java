@@ -48,7 +48,7 @@ class PostControllerTest {
         likesList.add(testUser1);
         List<Post> expectedList = new ArrayList<>();
 
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser1, Top, likesList);
+        Post expectedPost = new Post(1, "This is a test post", "image.com", new ArrayList<>(), testUser1, Top, likesList);
 
         expectedList.add(expectedPost);
 
@@ -58,6 +58,7 @@ class PostControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(expectedList.size())));
     }
+
     @Test
     void getAllPostsTestFail() throws Exception {
         given(postService.getAll()).willReturn(null);
@@ -73,7 +74,7 @@ class PostControllerTest {
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
+        Post expectedPost = new Post(1, "This is a test post", "image.com", new ArrayList<>(), testUser2, Top, likesList);
 
 
         given(postService.upsert(any(Post.class))).willAnswer((invocation) -> invocation.getArgument(0));
@@ -83,25 +84,21 @@ class PostControllerTest {
                         .content(objectMapper.writeValueAsString(expectedPost)))
                 .andExpect(status().isOk());
     }
+
     @Test
     void upsertPostTestFail() throws Exception {
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
+        Post expectedPost = new Post(1, "This is a test post", "image.com", new ArrayList<>(), testUser2, Top, likesList);
         Post unexpectedPost = new Post(2, "Unexpected post", "unexpected.com", new ArrayList<>(), testUser2, Top, likesList);
 
         given(postService.upsert(expectedPost)).willReturn(null);
 
         ResultActions resultActions = mockMvc.perform(put("/posts")
                         .contentType(MediaType.APPLICATION_JSON)
-//<<<<<<< Updated upstream
                         .content(objectMapper.writeValueAsString(unexpectedPost)))
                 .andExpect(status().isOk());
-/*=======
-                        .content((byte[]) null))
-                .andExpect(status().isBadRequest());
->>>>>>> Stashed changes*/
     }
 
     @Test
@@ -109,7 +106,7 @@ class PostControllerTest {
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
+        Post expectedPost = new Post(1, "This is a test post", "image.com", new ArrayList<>(), testUser2, Top, likesList);
 
 
         given(postService.upsert(any(Post.class))).willAnswer((invocation) -> invocation.getArgument(0));
@@ -119,13 +116,14 @@ class PostControllerTest {
                         .content(objectMapper.writeValueAsString(expectedPost)))
                 .andExpect(status().isOk());
     }
+
     @Test
     void createPostTestFail() throws Exception {
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
-        Post unExpectedPost = new Post(2,"test post2","image.com2",new ArrayList<>(), testUser2, Top, likesList);
+        Post expectedPost = new Post(1, "This is a test post", "image.com", new ArrayList<>(), testUser2, Top, likesList);
+        Post unExpectedPost = new Post(2, "test post2", "image.com2", new ArrayList<>(), testUser2, Top, likesList);
 
         given(postService.upsert(any(Post.class))).willReturn(null);
 
@@ -142,7 +140,7 @@ class PostControllerTest {
 
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
+        Post expectedPost = new Post(1, "This is a test post", "image.com", new ArrayList<>(), testUser2, Top, likesList);
 
         mockMvc.perform(delete("/posts/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -158,11 +156,11 @@ class PostControllerTest {
         User testUser2 = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        Post expectedPost = new Post(1,"This is a test post","image.com",new ArrayList<>(), testUser2, Top, likesList);
+        Post expectedPost = new Post(1, "This is a test post", "image.com", new ArrayList<>(), testUser2, Top, likesList);
 
         mockMvc.perform(delete("/posts/2")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(1)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(1)))
                 .andExpect(status().isOk());
 
         verify(postService, never()).deletePost(1);
@@ -221,7 +219,7 @@ class PostControllerTest {
         likesList.add(testUser2);
         List<Post> testList = new ArrayList<>();
 
-        Post testpost = new Post(1,"test","www",testList ,testUser2,Top,likesList);
+        Post testpost = new Post(1, "test", "www", testList, testUser2, Top, likesList);
 
 
         String editString = "editTest";
@@ -249,6 +247,7 @@ class PostControllerTest {
                 .andExpect(status().is(400));
 
     }
+
     @Test
     public void editPostByUrlSuccessTest() throws Exception {
         User testUser2 = new User(1, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
@@ -256,7 +255,7 @@ class PostControllerTest {
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
 
-        Post testpost = new Post(1,"test","www",testList ,testUser2,Top,likesList);
+        Post testpost = new Post(1, "test", "www", testList, testUser2, Top, likesList);
 
 
         String editString = "url/test.com";
@@ -283,7 +282,7 @@ class PostControllerTest {
         List<Post> testList = new ArrayList<>();
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser2);
-        Post testpost = new Post(2,"test","www",testList ,testUser2,Top,likesList);
+        Post testpost = new Post(2, "test", "www", testList, testUser2, Top, likesList);
 
 
         String editString = "url/test.com";
@@ -295,6 +294,7 @@ class PostControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(editString))
                 .andExpect(status().is(400));
     }
+
     @Test
     void createCommentsSuccess() throws Exception {
         User testUser = new User(2, "test2.com", "password2", "Bob", "Smith", "BSmi", null, null, "image2.com");
@@ -304,9 +304,8 @@ class PostControllerTest {
         Post expectedPost2 = new Post(2, "testing", "image2.com", new ArrayList<>(), testUser2, Top, new ArrayList<>());
 
 
-
         List<Post> testComment = new ArrayList<>();
-        testComment.add(0,expectedPost2);
+        testComment.add(0, expectedPost2);
         given(postService.findById(1)).willReturn(Optional.of(expectedPost));
         expectedPost.setComments(testComment);
         given(postService.upsert(expectedPost)).willAnswer((invocation) -> invocation.getArgument(0));
@@ -327,7 +326,7 @@ class PostControllerTest {
 
 
         List<Post> testComment = new ArrayList<>();
-        testComment.add(0,expectedPost2);
+        testComment.add(0, expectedPost2);
         given(postService.findById(1)).willReturn(null);
         expectedPost.setComments(testComment);
         given(postService.upsert(null)).willAnswer((invocation) -> invocation.getArgument(0));
@@ -378,14 +377,13 @@ class PostControllerTest {
         List<Post> listTopPost = new ArrayList<>();
         List<User> likesList = new ArrayList<>();
         likesList.add(testUser);
-        Post testPost = new Post(1, "String Text", "String URL",new ArrayList<>(), testUser, PostType.Top, likesList);
+        Post testPost = new Post(1, "String Text", "String URL", new ArrayList<>(), testUser, PostType.Top, likesList);
 
         listTopPost.add(testPost);
-        // listTopPost.add(new Post(3,"test post3","image3.com",new ArrayList<>(),testUser, PostType.Top,4));
         given(postService.getAllTop()).willReturn(listTopPost);
         this.mockMvc.perform(get("/posts/feed"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()",is(listTopPost.size())));
+                .andExpect(jsonPath("$.size()", is(listTopPost.size())));
 
     }
 
@@ -400,7 +398,7 @@ class PostControllerTest {
         List<Post> badList = new ArrayList<>();
 
         listTopPost.add(testPost);
-        listTopPost.add(new Post(3,"test post3","image3.com",new ArrayList<>(),testUser, PostType.Reply,likesList));
+        listTopPost.add(new Post(3, "test post3", "image3.com", new ArrayList<>(), testUser, PostType.Reply, likesList));
         given(postService.getAllTop()).willReturn(listTopPost);
         this.mockMvc.perform(get("/posts/feed"))
                 .andExpect(jsonPath("$.size()", is(listTopPost.size())))
@@ -436,10 +434,7 @@ class PostControllerTest {
         Optional<Post> optionalPost = Optional.of(testPost1);
         List<Post> ListFeed = new ArrayList<>();
         given(postService.findById(4)).willReturn(optionalPost);
-        //given(postService.findById(testUser3.getId())).willReturn(Optional.of(testPost1));
         this.mockMvc.perform(get("/posts/5"))
                 .andExpect(status().is(400)).andDo(print()).andReturn().getResponse().getContentAsString();
     }
-
-
 }

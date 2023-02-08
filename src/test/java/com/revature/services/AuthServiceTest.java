@@ -37,35 +37,35 @@ class AuthServiceTest {
 
     @Test
     void findByCredentialsFail() {
-        User mockUser = new User ("blorp@email.com","blorp","david","mata", "norping");
+        User mockUser = new User("blorp@email.com", "blorp", "david", "mata", "norping");
 
         when(authService.findByCredentials("blorp@email.com", "blorp")).thenReturn(Optional.of(mockUser));
 
         Optional<User> resultUser = authService.findByCredentials("blorp@email.com", "blorp");
 
-        assertNotEquals("blorpnorp",mockUser.getEmail());
-        assertNotEquals("chicaca",mockUser.getPassword());
+        assertNotEquals("blorpnorp", mockUser.getEmail());
+        assertNotEquals("chicaca", mockUser.getPassword());
 
-        assertNotEquals(resultUser.get().getEmail(),"blorpnorp");
-        assertNotEquals(resultUser.get().getPassword(),"chicaca");
+        assertNotEquals(resultUser.get().getEmail(), "blorpnorp");
+        assertNotEquals(resultUser.get().getPassword(), "chicaca");
 
     }
 
     @Test
     void registerSuccess() {
-        User mockUser = new User ("blorp@email.com","blorp","david","mata", "norping");
+        User mockUser = new User("blorp@email.com", "blorp", "david", "mata", "norping");
 
         when(authService.register(mockUser)).thenReturn(mockUser);
 
         User rUser = authService.register(mockUser);
 
         verify(userService).save(mockUser);
-        assertEquals(mockUser,rUser);
+        assertEquals(mockUser, rUser);
     }
 
     @Test
     void registerFail() {
-        User mockUser = new User ("blorp@email.com","blorp","david","mata", "norping");
+        User mockUser = new User("blorp@email.com", "blorp", "david", "mata", "norping");
 
         when(authService.register(mockUser)).thenThrow(new IllegalArgumentException());
 

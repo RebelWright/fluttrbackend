@@ -60,7 +60,7 @@ public class AuthControllerTest {
         testLoginR.setPassword("blorp");
         String requestBody = objectMapper.writeValueAsString(testLoginR);
 
-        given(authService.findByCredentials(testLoginR.getEmail(),testLoginR.getPassword())).willReturn(Optional.of(testUser2));
+        given(authService.findByCredentials(testLoginR.getEmail(), testLoginR.getPassword())).willReturn(Optional.of(testUser2));
         this.mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -81,7 +81,7 @@ public class AuthControllerTest {
         testLoginR.setEmail("blorp@email.com");
         testLoginR.setPassword("blorp");
 
-        given(authService.findByCredentials(testLoginR.getEmail(),testLoginR.getPassword())).willReturn(null);
+        given(authService.findByCredentials(testLoginR.getEmail(), testLoginR.getPassword())).willReturn(null);
         this.mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content((byte[]) null))
